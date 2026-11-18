@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Aire | Plataforma de Contenido del Sureste</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://api.fontsource.org/css?family=inter:400,500,600,700,800,900" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0A1929',
+                            navyLight: '#1E293B',
+                            navyDark: '#020617',
+                            cyan: '#06B6D4',
+                            cyanBright: '#22D3EE',
+                            blue: '#3B82F6',
+                            blueElectric: '#2563EB',
+                            magenta: '#EC4899',
+                            magentaDark: '#DB2777',
+                            gold: '#F59E0B',
+                            goldBright: '#FBBF24'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        section[id] { scroll-margin-top: 96px; }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .gradient-text { background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 50%, #EC4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* ====== TICKER ====== */
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .ticker-track { animation: marquee 40s linear infinite; }
+        .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
+
+        /* ====== BLOBS / FONDO VIVO ====== */
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(30px,-40px) scale(1.12); }
+            66% { transform: translate(-25px,25px) scale(0.94); }
+        }
+        .blob { position: absolute; border-radius: 9999px; filter: blur(90px); opacity: .22; animation: blobFloat 20s ease-in-out infinite; }
+
+        /* ====== ECUALIZADOR EN VIVO ====== */
+        @keyframes eqbar { 0%,100% { height: 4px; } 50% { height: 15px; } }
+        .eq { display: flex; align-items: flex-end; gap: 2px; height: 15px; }
+        .eq span { display: block; width: 2.5px; background: #fff; border-radius: 2px; height: 6px; animation: eqbar .9s ease-in-out infinite; }
+        .eq span:nth-child(2) { animation-delay: .15s; }
+        .eq span:nth-child(3) { animation-delay: .3s; }
+        .eq span:nth-child(4) { animation-delay: .45s; }
+
+        /* ====== BARRA DE PROGRESO EN VIVO ====== */
+        @keyframes liveBar { from { width: 6%; } to { width: 97%; } }
+        .live-bar { animation: liveBar 120s linear infinite; }
+
+        /* ====== REVEAL ON SCROLL ====== */
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1); }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        /* ====== POP IN ====== */
+        @keyframes popIn { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+        .pop-in { animation: popIn .35s cubic-bezier(.2,.7,.3,1) forwards; }
+
+        /* ====== PULSO EN VIVO ====== */
+        @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(236,72,153,.55); } 70% { box-shadow: 0 0 0 12px rgba(236,72,153,0); } }
+        .live-dot { animation: glowPulse 2.2s infinite; }
+
+        /* ====== FLOTAR ====== */
+        @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        .floaty { animation: floaty 6s ease-in-out infinite; }
+
+        /* ====== SHIMMER PARA EL BORDE GRADIENTE ====== */
+        @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        .shimmer-border {
+            background: linear-gradient(90deg,#06B6D4,#3B82F6,#EC4899,#F59E0B,#06B6D4);
+            background-size: 200% 100%;
+            animation: shimmer 6s linear infinite;
+        }
+
+        /* ====== LATIDO DEL BOTÓN PLAY ====== */
+        @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+        .beat { animation: beat 2.4s ease-in-out infinite; }
+
+        /* ====== SCROLL SUAVE INTERNO ====== */
+        .nice-scroll::-webkit-scrollbar { width: 6px; }
+        .nice-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
+        .nice-scroll::-webkit-scrollbar-track { background: transparent; }
+
+        .news-card { transition: opacity .3s ease, transform .3s ease; }
+    </style>
+</head>
+<body class="bg-brand-navy text-gray-100 antialiased">
+
+    <!-- ============================================================
+         TOP BAR
+    ============================================================ -->
+    <div class="bg-brand-navyDark border-b border-gray-800 py-2">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-2 text-gray-400">
+                    <i class="fas fa-map-marker-alt text-brand-cyan"></i>
+                    Coatzacoalcos, Veracruz
+                </span>
+                <span class="hidden md:flex items-center gap-2 text-gray-400">
+                    <i class="fas fa-cloud-sun text-brand-blue"></i>
+                    28°C Parcialmente nublado
+                </span>
+                <span class="hidden lg:flex items-center gap-2 text-gray-400">
+                    <i class="fas fa-clock text-brand-gold"></i>
+                    <span id="clock" class="tabular-nums font-medium text-gray-300">--:--:--</span>
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" onclick="toast('La App Móvil estará disponible muy pronto 🚀','info'); return false;" class="text-gray-400 hover:text-brand-cyan transition">App Móvil</a>
+                <a href="#" onclick="openContacto(); return false;" class="text-gray-400 hover:text-brand-cyan transition">Contacto</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         HEADER
+    ============================================================ -->
+    <header class="bg-brand-navy/95 backdrop-blur-lg border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+
+                <!-- LOGO -->
+                <a href="#inicio" class="flex items-center gap-3 group">
+                    <div class="relative flex-shrink-0">
+                        <img src="https://img.magnific.com/vector-gratis/aire-letrero-neon_23-2148758077.jpg"
+                             alt="Al Aire"
+                             class="h-12 w-auto max-w-[150px] object-contain rounded-lg ring-1 ring-brand-cyan/30 group-hover:ring-brand-cyan/80 transition duration-300 shadow-lg shadow-brand-cyan/10">
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-brand-magenta rounded-full border-2 border-brand-navy animate-pulse"></span>
+                    </div>
+                    <div class="hidden sm:block">
+                        <p class="text-[11px] text-gray-500 leading-tight">Sureste de Veracruz</p>
+                        <p class="text-[10px] text-brand-cyan flex items-center gap-1 mt-0.5 font-semibold">
+                            <span class="w-1.5 h-1.5 bg-brand-magenta rounded-full animate-pulse"></span> TRANSMITIENDO
+                        </p>
+                    </div>
+                </a>
+
+                <!-- NAVEGACIÓN -->
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="#inicio" class="nav-link px-4 py-2 text-sm font-medium text-white bg-brand-cyan/10 rounded-lg">Inicio</a>
+                    <a href="#envivo" class="nav-link px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition">En Vivo</a>
+                    <a href="#noticias" class="nav-link px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition">Noticias</a>
+                    <a href="#podcasts" class="nav-link px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition">Podcasts</a>
+                    <a href="#videos" class="nav-link px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition">Videos</a>
+                    <a href="#creadores" class="nav-link px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition">Creadores</a>
+                    <a href="#comunidad" class="nav-link px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition">Comunidad</a>
+                </nav>
+
+                <!-- ACCIONES -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button onclick="openSearch()" class="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm transition">
+                        <i class="fas fa-search text-gray-400"></i>
+                        <span class="text-gray-300">Buscar</span>
+                        <kbd class="hidden xl:inline text-[10px] text-gray-500 border border-gray-600 rounded px-1">⌘K</kbd>
+                    </button>
+
+                    <!-- Notificaciones -->
+                    <div class="relative">
+                        <button id="bellBtn" class="relative p-2 text-gray-400 hover:text-white transition">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span id="bellDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-brand-magenta rounded-full border-2 border-brand-navy animate-pulse"></span>
+                        </button>
+                        <div id="notifPanel" class="hidden absolute right-0 top-12 w-80 bg-brand-navyLight border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50">
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800">
+                                <p class="text-white text-sm font-bold">Notificaciones</p>
+                                <button onclick="clearNotifs()" class="text-[11px] text-brand-cyan hover:text-brand-cyanBright">Marcar leídas</button>
+                            </div>
+                            <div class="max-h-72 overflow-y-auto nice-scroll divide-y divide-gray-800">
+                                <div class="notif-item flex gap-3 p-3 hover:bg-gray-800/50 transition cursor-pointer">
+                                    <div class="w-8 h-8 rounded-lg bg-brand-magenta/20 flex items-center justify-center flex-shrink-0"><i class="fas fa-tower-broadcast text-brand-magenta text-xs"></i></div>
+                                    <div>
+                                        <p class="text-xs text-white font-medium">Luis Zerendieta está en vivo ahora</p>
+                                        <p class="text-[10px] text-gray-500 mt-0.5">Hace 2 minutos</p>
+                                    </div>
+                                </div>
+                                <div class="notif-item flex gap-3 p-3 hover:bg-gray-800/50 transition cursor-pointer">
+                                    <div class="w-8 h-8 rounded-lg bg-brand-blue/20 flex items-center justify-center flex-shrink-0"><i class="fas fa-newspaper text-brand-blue text-xs"></i></div>
+                                    <div>
+                                        <p class="text-xs text-white font-medium">Nueva nota: Inversiones en el puerto</p>
+                                        <p class="text-[10px] text-gray-500 mt-0.5">Hace 25 minutos</p>
+                                    </div>
+                                </div>
+                                <div class="notif-item flex gap-3 p-3 hover:bg-gray-800/50 transition cursor-pointer">
+                                    <div class="w-8 h-8 rounded-lg bg-brand-gold/20 flex items-center justify-center flex-shrink-0"><i class="fas fa-podcast text-brand-gold text-xs"></i></div>
+                                    <div>
+                                        <p class="text-xs text-white font-medium">Nuevo episodio: Emprendedores del Sur</p>
+                                        <p class="text-[10px] text-gray-500 mt-0.5">Hace 1 hora</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="openLogin()" class="bg-gradient-to-r from-brand-cyan to-brand-blue hover:from-brand-cyanBright hover:to-brand-blueElectric text-white px-3 sm:px-5 py-2 rounded-lg font-semibold text-sm transition shadow-lg shadow-brand-cyan/20">
+                        Iniciar Sesión
+                    </button>
+
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-gray-400 hover:text-white transition">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENÚ MÓVIL -->
+        <div id="mobileMenu" class="hidden lg:hidden border-t border-gray-800 bg-brand-navyDark">
+            <nav class="px-4 py-3 grid grid-cols-2 gap-1">
+                <a href="#inicio" onclick="toggleMobileMenu()" class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">Inicio</a>
+                <a href="#envivo" onclick="toggleMobileMenu()" class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">En Vivo</a>
+                <a href="#noticias" onclick="toggleMobileMenu()" class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">Noticias</a>
+                <a href="#podcasts" onclick="toggleMobileMenu()" class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">Podcasts</a>
+                <a href="#videos" onclick="toggleMobileMenu()" class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">Videos</a>
+                <a href="#creadores" onclick="toggleMobileMenu()" class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">Creadores</a>
+                <a href="#comunidad" onclick="toggleMobileMenu()" class="px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-lg">Comunidad</a>
+                <button onclick="openSearch()" class="px-3 py-2 text-sm text-left text-gray-300 hover:bg-gray-800 rounded-lg">Buscar</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         TICKER ÚLTIMA HORA
+    ============================================================ -->
+    <div class="bg-brand-navyDark border-b border-gray-800 py-1.5 overflow-hidden ticker-wrap">
+        <div class="max-w-7xl mx-auto px-4 flex items-center gap-3">
+            <span class="flex-shrink-0 bg-brand-magenta text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span> ÚLTIMA HORA
+            </span>
+            <div class="overflow-hidden flex-1">
+                <div class="ticker-track flex gap-10 whitespace-nowrap text-xs text-gray-400 w-max">
+                    <span><i class="fas fa-circle text-[5px] text-brand-cyan mr-2 align-middle"></i>Nuevas inversiones portuarias generarán 800 empleos en Coatzacoalcos</span>
+                    <span><i class="fas fa-circle text-[5px] text-brand-magenta mr-2 align-middle"></i>Festival gastronómico este fin de semana en el centro histórico</span>
+                    <span><i class="fas fa-circle text-[5px] text-brand-gold mr-2 align-middle"></i>Minatitlán inaugura nueva ruta de transporte industrial</span>
+                    <span><i class="fas fa-circle text-[5px] text-brand-blue mr-2 align-middle"></i>Acayucan prepara su feria anual con cartel internacional</span>
+                    <!-- duplicado para loop continuo -->
+                    <span><i class="fas fa-circle text-[5px] text-brand-cyan mr-2 align-middle"></i>Nuevas inversiones portuarias generarán 800 empleos en Coatzacoalcos</span>
+                    <span><i class="fas fa-circle text-[5px] text-brand-magenta mr-2 align-middle"></i>Festival gastronómico este fin de semana en el centro histórico</span>
+                    <span><i class="fas fa-circle text-[5px] text-brand-gold mr-2 align-middle"></i>Minatitlán inaugura nueva ruta de transporte industrial</span>
+                    <span><i class="fas fa-circle text-[5px] text-brand-blue mr-2 align-middle"></i>Acayucan prepara su feria anual con cartel internacional</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         HERO / EN VIVO
+    ============================================================ -->
+    <section id="inicio" class="relative bg-gradient-to-br from-brand-navy via-brand-navy to-gray-900 py-12 overflow-hidden">
+        <!-- Blobs animados -->
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <div class="blob w-72 h-72 bg-brand-cyan -top-24 -left-20"></div>
+            <div class="blob w-96 h-96 bg-brand-magenta top-1/3 -right-24" style="animation-delay:-7s"></div>
+            <div class="blob w-80 h-80 bg-brand-blue bottom-0 left-1/3" style="animation-delay:-13s"></div>
+        </div>
+
+        <div id="envivo" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-3 gap-6">
+
+                <!-- STREAM PRINCIPAL -->
+                <div class="lg:col-span-2">
+                    <div class="relative bg-brand-navyLight rounded-2xl overflow-hidden border border-gray-700 shadow-2xl">
+                        <div class="relative aspect-video bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1598550476439-6847785fcea6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+                                 alt="Transmisión en vivo"
+                                 class="w-full h-full object-cover opacity-60 transition duration-700" id="liveImg">
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none"></div>
+
+                            <!-- Badges -->
+                            <div class="absolute top-4 left-4 flex items-center gap-3">
+                                <div class="bg-brand-magenta text-white text-xs font-bold px-3 py-1.5 rounded-md flex items-center gap-2 shadow-lg live-dot">
+                                    <span class="eq"><span></span><span></span><span></span><span></span></span>
+                                    EN VIVO
+                                </div>
+                                <div class="bg-black/60 backdrop-blur text-white text-xs font-medium px-3 py-1.5 rounded-md flex items-center gap-2">
+                                    <i class="fas fa-eye text-brand-cyan"></i>
+                                    <span class="viewer-count tabular-nums">1,247</span> viendo
+                                </div>
+                            </div>
+
+                            <!-- Botón Play/Pausa -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <button id="livePlay"
+                                        class="w-20 h-20 bg-gradient-to-br from-brand-cyan to-brand-blue/90 hover:from-brand-cyanBright hover:to-brand-blueElectric rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-2xl beat opacity-40 hover:opacity-100">
+                                    <i class="fas fa-play text-white text-3xl ml-1" id="livePlayIcon"></i>
+                                </button>
+                            </div>
+
+                            <!-- Info inferior -->
+                            <div class="absolute bottom-0 left-0 right-0 p-6">
+                                <h2 class="text-white text-2xl font-bold mb-2">Reconexión con Luis Zerendieta</h2>
+                                <p class="text-gray-300 text-sm mb-4">Hablamos sobre el desarrollo del puerto y las mejores rutas para este fin de semana</p>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-10 h-10 rounded-full border-2 border-brand-cyan">
+                                        <div>
+                                            <p class="text-white font-semibold text-sm">Luis Zerendieta</p>
+                                            <p class="text-gray-400 text-xs">Host principal</p>
+                                        </div>
+                                    </div>
+                                    <button id="notifyBtn"
+                                            onclick="toggleNotify()"
+                                            class="ml-auto bg-white/10 hover:bg-white/20 backdrop-blur text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+                                        <i class="fas fa-bell"></i>
+                                        <span>Notificarme</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Controles -->
+                        <div class="bg-brand-navyDark p-4 border-t border-gray-800">
+                            <div class="flex items-center gap-4">
+                                <button onclick="toggleLivePlay()" class="text-white hover:text-brand-cyan transition">
+                                    <i id="barPlayIcon" class="fas fa-pause text-xl"></i>
+                                </button>
+                                <div class="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                    <div id="playerBar" class="live-bar h-full bg-gradient-to-r from-brand-cyan to-brand-blue rounded-full"></div>
+                                </div>
+                                <span class="text-brand-magenta text-[10px] font-bold px-2 py-0.5 rounded bg-brand-magenta/10 border border-brand-magenta/30">EN VIVO</span>
+                                <button onclick="toggleMute()" class="text-white hover:text-brand-cyan transition" title="Silenciar">
+                                    <i id="muteIcon" class="fas fa-volume-up"></i>
+                                </button>
+                                <button onclick="toast('Modo pantalla completa (demo)','info')" class="text-white hover:text-brand-cyan transition" title="Pantalla completa">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHAT EN VIVO -->
+                    <div class="mt-4 bg-brand-navyLight rounded-xl border border-gray-800 p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-white font-semibold flex items-center gap-2">
+                                <i class="fas fa-comments text-brand-cyan"></i>
+                                Chat en Vivo
+                            </h3>
+                            <span class="text-xs text-gray-500"><span class="viewer-count">1,247</span> participantes</span>
+                        </div>
+                        <div id="chatBox" class="space-y-3 max-h-40 overflow-y-auto nice-scroll pr-1">
+                            <div class="flex items-start gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-8 h-8 rounded-full flex-shrink-0">
+                                <div>
+                                    <p class="text-xs text-gray-400">María García</p>
+                                    <p class="text-sm text-gray-300">¡Excelente tema! Me encanta que hablen de Coatzacoalcos</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" class="w-8 h-8 rounded-full flex-shrink-0">
+                                <div>
+                                    <p class="text-xs text-gray-400">Carlos Mendoza</p>
+                                    <p class="text-sm text-gray-300">¿Hablarán del nuevo malecón?</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/23.jpg" class="w-8 h-8 rounded-full flex-shrink-0">
+                                <div>
+                                    <p class="text-xs text-gray-400">Ana Rodríguez</p>
+                                    <p class="text-sm text-gray-300">Saludos desde Minatitlán 🙌</p>
+                                </div>
+                            </div>
+                        </div>
+                        <form id="chatForm" class="mt-3 flex gap-2">
+                            <input id="chatInput" type="text" placeholder="Escribe un mensaje..."
+                                   class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-brand-cyan transition">
+                            <button type="submit" class="bg-gradient-to-r from-brand-cyan to-brand-blue hover:from-brand-cyanBright hover:to-brand-blueElectric text-white px-4 py-2 rounded-lg transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- SIDEBAR -->
+                <div class="space-y-4">
+                    <div class="bg-brand-navyLight rounded-xl border border-gray-800 p-4">
+                        <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-brand-blue"></i>
+                            Próximas Transmisiones
+                        </h3>
+                        <div class="space-y-3">
+                            <div onclick="openPrograma('Podcast: Emprendedores del Sur','Hoy 8:00 PM','Con invitados especiales')"
+                                 class="flex gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition cursor-pointer hover:translate-x-1 duration-300">
+                                <div class="w-16 h-16 bg-gradient-to-br from-brand-magenta to-brand-magentaDark rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-microphone text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white font-semibold text-sm truncate">Podcast: Emprendedores del Sur</p>
+                                    <p class="text-gray-400 text-xs mt-1">Hoy 8:00 PM</p>
+                                    <p class="text-brand-cyan text-xs mt-1">Con invitados especiales</p>
+                                </div>
+                            </div>
+                            <div onclick="openPrograma('Noticiero Matutino','Mañana 7:00 AM','Resumen semanal')"
+                                 class="flex gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition cursor-pointer hover:translate-x-1 duration-300">
+                                <div class="w-16 h-16 bg-gradient-to-br from-brand-blue to-brand-blueElectric rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-newspaper text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white font-semibold text-sm truncate">Noticiero Matutino</p>
+                                    <p class="text-gray-400 text-xs mt-1">Mañana 7:00 AM</p>
+                                    <p class="text-brand-cyan text-xs mt-1">Resumen semanal</p>
+                                </div>
+                            </div>
+                            <div onclick="openPrograma('Sesión Musical: Artistas Locales','Viernes 9:00 PM','En vivo desde el estudio')"
+                                 class="flex gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition cursor-pointer hover:translate-x-1 duration-300">
+                                <div class="w-16 h-16 bg-gradient-to-br from-brand-gold to-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-music text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-white font-semibold text-sm truncate">Sesión Musical: Artistas Locales</p>
+                                    <p class="text-gray-400 text-xs mt-1">Viernes 9:00 PM</p>
+                                    <p class="text-brand-cyan text-xs mt-1">En vivo desde el estudio</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="bg-gradient-to-br from-brand-cyan via-brand-blue to-brand-magenta rounded-xl p-5 text-white shadow-xl floaty">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-gift text-2xl"></i>
+                            <h3 class="font-bold text-lg">Club de Fundadores</h3>
+                        </div>
+                        <p class="text-white/90 text-sm mb-4">Sé de los primeros 500 miembros y recibe beneficios exclusivos</p>
+                        <button onclick="openFounders()" class="w-full bg-white text-brand-navy font-bold py-2.5 rounded-lg hover:bg-gray-100 transition transform hover:scale-[1.02]">
+                            Unirme Ahora
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         NOTICIAS
+    ============================================================ -->
+    <section id="noticias" class="py-12 bg-brand-navy">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8 reveal">
+                <div>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-newspaper text-brand-blue"></i>
+                        Noticias de la Región
+                    </h2>
+                    <p class="text-gray-400 mt-2">Lo último del Sureste de Veracruz</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button data-filter="todas" class="news-filter px-4 py-2 bg-gradient-to-r from-brand-cyan to-brand-blue text-white rounded-lg text-sm font-medium transition">Todas</button>
+                    <button data-filter="coatzacoalcos" class="news-filter px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded-lg text-sm font-medium transition">Coatzacoalcos</button>
+                    <button data-filter="minatitlan" class="news-filter px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded-lg text-sm font-medium transition">Minatitlán</button>
+                    <button data-filter="acayucan" class="news-filter px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded-lg text-sm font-medium transition">Acayucan</button>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Destacado -->
+                <div data-cat="coatzacoalcos" onclick="openNews('El futuro del turismo en las Escolleras de Coatzacoalcos','Luis Zerendieta','Hace 2 horas','https://images.unsplash.com/photo-1493225255756-d9584f8606e9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card reveal md:col-span-2 lg:col-span-2 bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 to-transparent"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-brand-blue text-white text-xs font-bold px-3 py-1 rounded">DESTACADO</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <h3 class="text-white text-xl font-bold mb-2">El futuro del turismo en las Escolleras de Coatzacoalcos</h3>
+                            <p class="text-gray-300 text-sm line-clamp-2">Un recorrido visual por las nuevas propuestas de desarrollo para la zona costera que prometen transformar el turismo en la región</p>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-6 h-6 rounded-full">
+                                <span>Luis Zerendieta</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span><i class="far fa-clock mr-1"></i>Hace 2 horas</span>
+                                <span><i class="far fa-eye mr-1"></i>1.5k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 2 -->
+                <div data-cat="coatzacoalcos" onclick="openNews('Nuevas inversiones llegan al puerto industrial','Redacción Al Aire','Hace 4 horas','https://images.unsplash.com/photo-1551818255-e6e10975bc17?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1551818255-e6e10975bc17?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-brand-gold text-white text-xs font-bold px-2 py-1 rounded">ECONOMÍA</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-cyan transition">Nuevas inversiones llegan al puerto industrial</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-3">
+                            <span>Hace 4 horas</span>
+                            <span><i class="far fa-eye mr-1"></i>892</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 3 -->
+                <div data-cat="coatzacoalcos" onclick="openNews('Festival gastronómico este fin de semana en el centro','María García','Ayer','https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-brand-magenta text-white text-xs font-bold px-2 py-1 rounded">CULTURA</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-cyan transition">Festival gastronómico este fin de semana en el centro</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-3">
+                            <span>Ayer</span>
+                            <span><i class="far fa-eye mr-1"></i>2.1k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 4 -->
+                <div data-cat="minatitlan" onclick="openNews('Minatitlán estrena ruta de transporte hacia la zona industrial','Redacción Al Aire','Hace 6 horas','https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-brand-blue text-white text-xs font-bold px-2 py-1 rounded">MOVILIDAD</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-cyan transition">Minatitlán estrena ruta de transporte hacia la zona industrial</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-3">
+                            <span>Hace 6 horas</span>
+                            <span><i class="far fa-eye mr-1"></i>1.1k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 5 -->
+                <div data-cat="acayucan" onclick="openNews('Acayucan prepara su feria anual con cartel internacional','Carlos Mendoza','Hace 8 horas','https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-brand-gold text-white text-xs font-bold px-2 py-1 rounded">EVENTOS</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-cyan transition">Acayucan prepara su feria anual con cartel internacional</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-3">
+                            <span>Hace 8 horas</span>
+                            <span><i class="far fa-eye mr-1"></i>3.4k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 6 -->
+                <div data-cat="minatitlan" onclick="openNews('Brigadas de salud gratuitas recorrerán colonias de Minatitlán','Redacción Al Aire','Hace 10 horas','https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded">SALUD</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-cyan transition">Brigadas de salud gratuitas recorrerán colonias de Minatitlán</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-3">
+                            <span>Hace 10 horas</span>
+                            <span><i class="far fa-eye mr-1"></i>764</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas extra (ocultas) -->
+                <div data-cat="coatzacoalcos" data-extra="1" onclick="openNews('Inauguran nuevo malecón en la zona costera','Luis Zerendieta','Hace 1 día','https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card hidden bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-brand-cyan text-white text-xs font-bold px-2 py-1 rounded">OBRA PÚBLICA</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-cyan transition">Inauguran nuevo malecón en la zona costera</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-3">
+                            <span>Hace 1 día</span>
+                            <span><i class="far fa-eye mr-1"></i>1.9k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-cat="acayucan" data-extra="1" onclick="openNews('Productores de Acayucan buscan exportar a Asia','Redacción Al Aire','Hace 2 días','https://images.unsplash.com/photo-1495020689067-958852a7765e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="news-card hidden bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group cursor-pointer">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 left-3 bg-brand-gold text-white text-xs font-bold px-2 py-1 rounded">AGRICULTURA</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-cyan transition">Productores de Acayucan buscan exportar a Asia</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-3">
+                            <span>Hace 2 días</span>
+                            <span><i class="far fa-eye mr-1"></i>980</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-8">
+                <button id="moreNewsBtn" onclick="toggleMoreNews()" class="bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-medium transition">
+                    Ver todas las noticias
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         PODCASTS
+    ============================================================ -->
+    <section id="podcasts" class="py-12 bg-gray-900 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8 reveal">
+                <div>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-podcast text-brand-magenta"></i>
+                        Podcasts
+                    </h2>
+                    <p class="text-gray-400 mt-2">Historias, entrevistas y análisis de la región</p>
+                </div>
+                <a href="#" onclick="toast('Cargando el catálogo completo de podcasts (demo)','info'); return false;" class="text-brand-cyan hover:text-brand-cyanBright text-sm font-semibold flex items-center gap-1">
+                    Ver todos <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Podcast 1 -->
+                <div class="podcast-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-magenta/50 transition group">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="Emprendedores del Sur">
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-magenta/80 to-brand-magentaDark/80"></div>
+                        <i class="fas fa-headphones text-white/25 text-8xl absolute inset-0 flex items-center justify-center"></i>
+                        <button data-title="Emprendedores del Sur" data-author="Luis Zerendieta" data-min="45"
+                                onclick="playPodcast(this)"
+                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition">
+                                <i class="fas fa-play text-white text-2xl ml-1"></i>
+                            </span>
+                        </button>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur text-white text-xs font-bold px-2 py-1 rounded">EP. 12</div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-white font-bold text-lg mb-2 group-hover:text-brand-magenta transition">Emprendedores del Sur</h3>
+                        <p class="text-gray-400 text-sm line-clamp-2 mb-4">Entrevista exclusiva con los fundadores de los negocios locales que están revolucionando la gastronomía</p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" class="w-6 h-6 rounded-full">
+                                <span>Luis Zerendieta</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span><i class="fas fa-clock mr-1"></i>45 min</span>
+                                <span><i class="fas fa-play mr-1"></i>3.2k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Podcast 2 -->
+                <div class="podcast-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-blue/50 transition group">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="Historias del Puerto">
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-blue/80 to-brand-blueElectric/80"></div>
+                        <i class="fas fa-microphone text-white/25 text-8xl absolute inset-0 flex items-center justify-center"></i>
+                        <button data-title="Historias del Puerto" data-author="María Fernández" data-min="32"
+                                onclick="playPodcast(this)"
+                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition">
+                                <i class="fas fa-play text-white text-2xl ml-1"></i>
+                            </span>
+                        </button>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur text-white text-xs font-bold px-2 py-1 rounded">EP. 8</div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-white font-bold text-lg mb-2 group-hover:text-brand-blue transition">Historias del Puerto</h3>
+                        <p class="text-gray-400 text-sm line-clamp-2 mb-4">Relatos y memorias de los personajes que han marcado la historia de Coatzacoalcos</p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/women/33.jpg" class="w-6 h-6 rounded-full">
+                                <span>María Fernández</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span><i class="fas fa-clock mr-1"></i>32 min</span>
+                                <span><i class="fas fa-play mr-1"></i>2.8k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Podcast 3 -->
+                <div class="podcast-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1589903308904-1010c2294adc?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="Debate Regional">
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-cyan/80 to-cyan-800/80"></div>
+                        <i class="fas fa-comments text-white/25 text-8xl absolute inset-0 flex items-center justify-center"></i>
+                        <button data-title="Debate Regional" data-author="Carlos Mendoza" data-min="58"
+                                onclick="playPodcast(this)"
+                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition">
+                                <i class="fas fa-play text-white text-2xl ml-1"></i>
+                            </span>
+                        </button>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur text-white text-xs font-bold px-2 py-1 rounded">EP. 15</div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-white font-bold text-lg mb-2 group-hover:text-brand-cyan transition">Debate Regional</h3>
+                        <p class="text-gray-400 text-sm line-clamp-2 mb-4">Análisis semanal de los temas más importantes con expertos y líderes de opinión</p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" class="w-6 h-6 rounded-full">
+                                <span>Carlos Mendoza</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span><i class="fas fa-clock mr-1"></i>58 min</span>
+                                <span><i class="fas fa-play mr-1"></i>4.1k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         VIDEOS
+    ============================================================ -->
+    <section id="videos" class="py-12 bg-brand-navy">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8 reveal">
+                <div>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-video text-brand-gold"></i>
+                        Videos Destacados
+                    </h2>
+                    <p class="text-gray-400 mt-2">Documentales, reportajes y contenido exclusivo</p>
+                </div>
+                <a href="#" onclick="toast('Cargando la videoteca completa (demo)','info'); return false;" class="text-brand-cyan hover:text-brand-cyanBright text-sm font-semibold flex items-center gap-1">
+                    Ver todos <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <div onclick="openVideo('Guía: Los mejores tacos de Minatitlán','12:34','https://images.unsplash.com/photo-1516280440614-6697288d5d38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="video-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-gold/50 transition group cursor-pointer">
+                    <div class="relative aspect-video overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1516280440614-6697288d5d38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                            </span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">12:34</div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-gold transition">Guía: Los mejores tacos de Minatitlán</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+                            <span>Hace 3 días</span>
+                            <span><i class="far fa-eye mr-1"></i>5.2k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openVideo('Recetas tradicionales del sur de Veracruz','8:21','https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="video-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-gold/50 transition group cursor-pointer">
+                    <div class="relative aspect-video overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                            </span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">8:21</div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-gold transition">Recetas tradicionales del sur de Veracruz</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+                            <span>Hace 5 días</span>
+                            <span><i class="far fa-eye mr-1"></i>3.8k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openVideo('Startups tecnológicas en Coatzacoalcos','15:47','https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="video-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-gold/50 transition group cursor-pointer">
+                    <div class="relative aspect-video overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                            </span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">15:47</div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-gold transition">Startups tecnológicas en Coatzacoalcos</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+                            <span>Hace 1 semana</span>
+                            <span><i class="far fa-eye mr-1"></i>2.4k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openVideo('Lugares secretos para visitar en la región','6:52','https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')"
+                     class="video-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-gold/50 transition group cursor-pointer">
+                    <div class="relative aspect-video overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="w-14 h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                            </span>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">6:52</div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-bold mb-2 line-clamp-2 group-hover:text-brand-gold transition">Lugares secretos para visitar en la región</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+                            <span>Hace 2 semanas</span>
+                            <span><i class="far fa-eye mr-1"></i>4.7k</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         CREADORES
+    ============================================================ -->
+    <section id="creadores" class="py-12 bg-gray-900 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 reveal">
+                <div>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-star text-brand-cyan"></i>
+                        Creadores Destacados
+                    </h2>
+                    <p class="text-gray-400 mt-2">Conoce a los talentos locales de la región</p>
+                </div>
+                <button onclick="openCreatorForm()" class="bg-gradient-to-r from-brand-cyan to-brand-blue hover:from-brand-cyanBright hover:to-brand-blueElectric text-white px-6 py-2 rounded-lg font-medium transition shadow-lg shadow-brand-cyan/20">
+                    Quiero ser creador
+                </button>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <div class="creator-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-cyan/50 transition group">
+                    <div class="relative h-32 bg-gradient-to-br from-brand-cyan via-brand-blue to-brand-magenta">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full border-4 border-brand-navyLight">
+                    </div>
+                    <div class="pt-14 pb-5 px-5 text-center">
+                        <h3 class="text-white font-bold text-lg">Luis Zerendieta</h3>
+                        <p class="text-gray-400 text-sm mt-1">Host principal • Periodista</p>
+                        <div class="flex items-center justify-center gap-4 mt-4 text-xs text-gray-500">
+                            <span><i class="fas fa-video mr-1"></i>124 videos</span>
+                            <span><i class="fas fa-users mr-1"></i><span class="fcount">8.4k</span> seguidores</span>
+                        </div>
+                        <button data-name="Luis Zerendieta" data-following="0" onclick="toggleFollow(this)"
+                                class="follow-btn mt-4 w-full bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-lg text-sm font-medium transition">
+                            Seguir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="creator-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-magenta/50 transition group">
+                    <div class="relative h-32 bg-gradient-to-br from-brand-magenta to-brand-magentaDark">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full border-4 border-brand-navyLight">
+                    </div>
+                    <div class="pt-14 pb-5 px-5 text-center">
+                        <h3 class="text-white font-bold text-lg">María García</h3>
+                        <p class="text-gray-400 text-sm mt-1">Chef • Gastrónoma</p>
+                        <div class="flex items-center justify-center gap-4 mt-4 text-xs text-gray-500">
+                            <span><i class="fas fa-video mr-1"></i>87 videos</span>
+                            <span><i class="fas fa-users mr-1"></i><span class="fcount">5.2k</span> seguidores</span>
+                        </div>
+                        <button data-name="María García" data-following="0" onclick="toggleFollow(this)"
+                                class="follow-btn mt-4 w-full bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-lg text-sm font-medium transition">
+                            Seguir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="creator-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-blue/50 transition group">
+                    <div class="relative h-32 bg-gradient-to-br from-brand-blue to-brand-blueElectric">
+                        <img src="https://randomuser.me/api/portraits/men/67.jpg" class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full border-4 border-brand-navyLight">
+                    </div>
+                    <div class="pt-14 pb-5 px-5 text-center">
+                        <h3 class="text-white font-bold text-lg">Carlos Mendoza</h3>
+                        <p class="text-gray-400 text-sm mt-1">Analista político</p>
+                        <div class="flex items-center justify-center gap-4 mt-4 text-xs text-gray-500">
+                            <span><i class="fas fa-video mr-1"></i>156 videos</span>
+                            <span><i class="fas fa-users mr-1"></i><span class="fcount">12.1k</span> seguidores</span>
+                        </div>
+                        <button data-name="Carlos Mendoza" data-following="0" onclick="toggleFollow(this)"
+                                class="follow-btn mt-4 w-full bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-lg text-sm font-medium transition">
+                            Seguir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="creator-card reveal bg-brand-navyLight rounded-xl overflow-hidden border border-gray-800 hover:border-brand-gold/50 transition group">
+                    <div class="relative h-32 bg-gradient-to-br from-brand-gold to-yellow-600">
+                        <img src="https://randomuser.me/api/portraits/women/23.jpg" class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full border-4 border-brand-navyLight">
+                    </div>
+                    <div class="pt-14 pb-5 px-5 text-center">
+                        <h3 class="text-white font-bold text-lg">Ana Rodríguez</h3>
+                        <p class="text-gray-400 text-sm mt-1">Viajera • Blogger</p>
+                        <div class="flex items-center justify-center gap-4 mt-4 text-xs text-gray-500">
+                            <span><i class="fas fa-video mr-1"></i>93 videos</span>
+                            <span><i class="fas fa-users mr-1"></i><span class="fcount">6.8k</span> seguidores</span>
+                        </div>
+                        <button data-name="Ana Rodríguez" data-following="0" onclick="toggleFollow(this)"
+                                class="follow-btn mt-4 w-full bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-lg text-sm font-medium transition">
+                            Seguir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         COMUNIDAD / DIRECTORIO
+    ============================================================ -->
+    <section id="comunidad" class="py-12 bg-brand-navy">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10 reveal">
+                <h2 class="text-3xl font-bold text-white flex items-center justify-center gap-3">
+                    <i class="fas fa-map-marked-alt text-brand-blue"></i>
+                    Directorio Local
+                </h2>
+                <p class="text-gray-400 mt-2">Encuentra los mejores negocios y servicios de la región</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="openDirectorio('Restaurantes',124,'fa-utensils','brand-magenta')"
+                     class="reveal bg-brand-navyLight rounded-xl p-6 border border-gray-800 hover:border-brand-magenta/50 transition cursor-pointer group hover:-translate-y-1 duration-300">
+                    <div class="w-14 h-14 bg-brand-magenta/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-brand-magenta/20 transition">
+                        <i class="fas fa-utensils text-brand-magenta text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Restaurantes</h3>
+                    <p class="text-gray-400 text-sm mb-4">Los mejores lugares para comer en la región</p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">124 negocios</span>
+                        <i class="fas fa-arrow-right text-brand-magenta group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <div onclick="openDirectorio('Comercios',256,'fa-shopping-bag','brand-blue')"
+                     class="reveal bg-brand-navyLight rounded-xl p-6 border border-gray-800 hover:border-brand-blue/50 transition cursor-pointer group hover:-translate-y-1 duration-300">
+                    <div class="w-14 h-14 bg-brand-blue/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-brand-blue/20 transition">
+                        <i class="fas fa-shopping-bag text-brand-blue text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Comercios</h3>
+                    <p class="text-gray-400 text-sm mb-4">Tiendas y servicios locales</p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">256 negocios</span>
+                        <i class="fas fa-arrow-right text-brand-blue group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <div onclick="openDirectorio('Servicios',189,'fa-briefcase','brand-cyan')"
+                     class="reveal bg-brand-navyLight rounded-xl p-6 border border-gray-800 hover:border-brand-cyan/50 transition cursor-pointer group hover:-translate-y-1 duration-300">
+                    <div class="w-14 h-14 bg-brand-cyan/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-brand-cyan/20 transition">
+                        <i class="fas fa-briefcase text-brand-cyan text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Servicios</h3>
+                    <p class="text-gray-400 text-sm mb-4">Profesionistas y empresas</p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">189 negocios</span>
+                        <i class="fas fa-arrow-right text-brand-cyan group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <div onclick="openDirectorio('Eventos',47,'fa-calendar-check','brand-gold')"
+                     class="reveal bg-brand-navyLight rounded-xl p-6 border border-gray-800 hover:border-brand-gold/50 transition cursor-pointer group hover:-translate-y-1 duration-300">
+                    <div class="w-14 h-14 bg-brand-gold/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-brand-gold/20 transition">
+                        <i class="fas fa-calendar-check text-brand-gold text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Eventos</h3>
+                    <p class="text-gray-400 text-sm mb-4">Actividades y entretenimiento</p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-500">47 eventos</span>
+                        <i class="fas fa-arrow-right text-brand-gold group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         MARCAS / PATROCINADORES
+    ============================================================ -->
+    <section class="py-12 bg-gray-900 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="reveal bg-gradient-to-r from-brand-cyan/10 via-brand-blue/10 to-brand-magenta/10 rounded-2xl p-8 border border-brand-cyan/20">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="text-center md:text-left">
+                        <h2 class="text-2xl font-bold text-white mb-2">¿Tienes un negocio en la región?</h2>
+                        <p class="text-gray-300">Llega directamente a miles de consumidores locales sin depender de algoritmos</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="openAdvertise()" class="bg-gradient-to-r from-brand-cyan to-brand-blue hover:from-brand-cyanBright hover:to-brand-blueElectric text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg shadow-brand-cyan/20">
+                            Anuncia tu marca
+                        </button>
+                        <button onclick="openPlans()" class="bg-white/10 hover:bg-white/20 backdrop-blur text-white px-6 py-3 rounded-lg font-semibold transition">
+                            Ver planes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8 pt-8 border-t border-gray-700">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold gradient-text mb-1" data-count="15" data-suffix="k+">0</div>
+                        <div class="text-gray-400 text-sm">Suscriptores activos</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold gradient-text mb-1" data-count="98" data-suffix="%">0</div>
+                        <div class="text-gray-400 text-sm">Tasa de entrega</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold gradient-text mb-1">24/7</div>
+                        <div class="text-gray-400 text-sm">Contenido disponible</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold gradient-text mb-1" data-count="100" data-suffix="%">0</div>
+                        <div class="text-gray-400 text-sm">Audiencia local</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+    ============================================================ -->
+    <footer class="bg-brand-navyDark border-t border-gray-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+                <div class="lg:col-span-2">
+                    <div class="mb-4">
+                        <img src="https://img.magnific.com/vector-gratis/aire-letrero-neon_23-2148758077.jpg"
+                             alt="Al Aire"
+                             class="h-14 w-auto max-w-[180px] object-contain rounded-lg ring-1 ring-brand-cyan/20">
+                        <p class="text-xs text-gray-500 mt-2">Sureste de Veracruz</p>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4 max-w-md">
+                        La macroplataforma de contenido del Sureste de Veracruz. Noticias, podcasts, videos y comunidad en un solo lugar.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" onclick="toast('Abriendo Facebook (demo)','info'); return false;" class="w-10 h-10 bg-gray-800 hover:bg-brand-cyan rounded-lg flex items-center justify-center transition">
+                            <i class="fab fa-facebook-f text-white"></i>
+                        </a>
+                        <a href="#" onclick="toast('Abriendo Instagram (demo)','info'); return false;" class="w-10 h-10 bg-gray-800 hover:bg-brand-magenta rounded-lg flex items-center justify-center transition">
+                            <i class="fab fa-instagram text-white"></i>
+                        </a>
+                        <a href="#" onclick="toast('Abriendo TikTok (demo)','info'); return false;" class="w-10 h-10 bg-gray-800 hover:bg-brand-blue rounded-lg flex items-center justify-center transition">
+                            <i class="fab fa-tiktok text-white"></i>
+                        </a>
+                        <a href="#" onclick="toast('Abriendo YouTube (demo)','info'); return false;" class="w-10 h-10 bg-gray-800 hover:bg-brand-gold rounded-lg flex items-center justify-center transition">
+                            <i class="fab fa-youtube text-white"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4">Plataforma</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#envivo" class="hover:text-brand-cyan transition">En Vivo</a></li>
+                        <li><a href="#noticias" class="hover:text-brand-cyan transition">Noticias</a></li>
+                        <li><a href="#podcasts" class="hover:text-brand-cyan transition">Podcasts</a></li>
+                        <li><a href="#videos" class="hover:text-brand-cyan transition">Videos</a></li>
+                        <li><a href="#creadores" class="hover:text-brand-cyan transition">Creadores</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4">Comunidad</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#comunidad" class="hover:text-brand-cyan transition">Directorio Local</a></li>
+                        <li><a href="#comunidad" class="hover:text-brand-cyan transition">Eventos</a></li>
+                        <li><a href="#" onclick="openFounders(); return false;" class="hover:text-brand-cyan transition">Club de Fundadores</a></li>
+                        <li><a href="#" onclick="toast('La App Móvil estará disponible muy pronto 🚀','info'); return false;" class="hover:text-brand-cyan transition">App Móvil</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" onclick="openLegal('Aviso de Privacidad'); return false;" class="hover:text-brand-cyan transition">Aviso de Privacidad</a></li>
+                        <li><a href="#" onclick="openLegal('Términos y Condiciones'); return false;" class="hover:text-brand-cyan transition">Términos y Condiciones</a></li>
+                        <li><a href="#" onclick="openLegal('Política de Cookies'); return false;" class="hover:text-brand-cyan transition">Política de Cookies</a></li>
+                        <li><a href="#" onclick="openContacto(); return false;" class="hover:text-brand-cyan transition">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 mt-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-gray-500 text-sm text-center md:text-left">
+                        &copy; 2026 <span class="text-white font-semibold">Al Aire</span> (anteriormente Visual Production). Todos los derechos reservados. Coatzacoalcos, Veracruz.
+                    </p>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <span class="w-2 h-2 bg-brand-cyan rounded-full animate-pulse"></span>
+                        <span>Transmitiendo 24/7 desde el Sureste de México</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+         MINI REPRODUCTOR
+    ============================================================ -->
+    <div id="miniPlayer" class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-xl z-[80] bg-brand-navyLight/95 backdrop-blur border border-gray-700 rounded-2xl shadow-2xl transition-all duration-500 translate-y-40 opacity-0">
+        <div class="flex items-center gap-3 p-3">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-magenta to-brand-magentaDark flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-podcast text-white"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p id="miniTitle" class="text-white text-sm font-semibold truncate">—</p>
+                <div class="flex items-center gap-2 mt-1.5">
+                    <span id="miniTime" class="text-[10px] text-gray-400 tabular-nums">00:00</span>
+                    <div class="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+                        <div id="miniProgress" class="h-full w-0 bg-gradient-to-r from-brand-magenta to-brand-cyan rounded-full"></div>
+                    </div>
+                    <span id="miniTotal" class="text-[10px] text-gray-400 tabular-nums">45:00</span>
+                </div>
+            </div>
+            <button id="miniToggle" onclick="toggleMiniPlay()" class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-cyan to-brand-blue flex items-center justify-center text-white flex-shrink-0 hover:scale-105 transition">
+                <i class="fas fa-pause text-sm"></i>
+            </button>
+            <button onclick="closeMiniPlayer()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 flex items-center justify-center transition flex-shrink-0">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         MODAL GENÉRICO
+    ============================================================ -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="relative h-full flex items-center justify-center p-4">
+            <div id="modalPanel" class="pop-in w-full max-w-lg bg-brand-navyLight border border-gray-700 rounded-2xl shadow-2xl overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-800">
+                    <h3 id="modalTitle" class="text-white font-bold"></h3>
+                    <button onclick="closeModal()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 flex items-center justify-center transition">
+                        <i class="fas fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="modalBody" class="p-5 max-h-[75vh] overflow-y-auto nice-scroll"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         BUSCADOR
+    ============================================================ -->
+    <div id="searchOverlay" class="fixed inset-0 z-[95] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeSearch()"></div>
+        <div class="relative max-w-2xl mx-auto mt-20 sm:mt-28 px-4">
+            <div class="pop-in bg-brand-navyLight rounded-2xl border border-gray-700 overflow-hidden shadow-2xl">
+                <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-800">
+                    <i class="fas fa-search text-brand-cyan"></i>
+                    <input id="searchInput" type="text" placeholder="Buscar noticias, podcasts, creadores..."
+                           class="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-500">
+                    <kbd class="text-[10px] text-gray-500 border border-gray-600 rounded px-1.5 py-0.5">ESC</kbd>
+                </div>
+                <div id="searchResults" class="max-h-80 overflow-y-auto nice-scroll p-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         TOASTS
+    ============================================================ -->
+    <div id="toasts" class="fixed bottom-4 right-4 z-[120] flex flex-col gap-2 items-end"></div>
+
+    <!-- ============================================================
+         JAVASCRIPT
+    ============================================================ -->
+    <script>
+    /* =========================================================
+       UTILIDADES
+    ========================================================= */
+    const $  = (s, ctx = document) => ctx.querySelector(s);
+    const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    /* =========================================================
+       TOASTS
+    ========================================================= */
+    function toast(msg, type = 'info') {
+        const map = {
+            info:    { grad: 'from-brand-cyan to-brand-blue',        icon: 'fa-circle-info' },
+            success: { grad: 'from-emerald-500 to-teal-500',         icon: 'fa-circle-check' },
+            warn:    { grad: 'from-brand-gold to-orange-500',        icon: 'fa-triangle-exclamation' },
+            live:    { grad: 'from-brand-magenta to-pink-600',       icon: 'fa-tower-broadcast' }
+        };
+        const cfg = map[type] || map.info;
+        const el = document.createElement('div');
+        el.className = 'pop-in flex items-center gap-3 bg-brand-navyLight border border-gray-700 rounded-xl pl-1 pr-4 py-1 shadow-2xl max-w-xs';
+        el.innerHTML = `
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br ${cfg.grad} flex items-center justify-center flex-shrink-0">
+                <i class="fas ${cfg.icon} text-white text-sm"></i>
+            </div>
+            <p class="text-sm text-gray-200">${msg}</p>`;
+        $('#toasts').appendChild(el);
+        setTimeout(() => {
+            el.style.transition = 'all .4s ease';
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(40px)';
+            setTimeout(() => el.remove(), 420);
+        }, 3600);
+    }
+    window.toast = toast;
+
+    /* =========================================================
+       RELOJ EN VIVO
+    ========================================================= */
+    function tickClock() {
+        const d = new Date();
+        const el = $('#clock');
+        if (el) el.textContent = d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    setInterval(tickClock, 1000);
+    tickClock();
+
+    /* =========================================================
+       CONTADOR DE ESPECTADORES
+    ========================================================= */
+    let viewers = 1247;
+    function updateViewers() {
+        viewers += rand(-9, 20);
+        if (viewers < 980) viewers = 980 + rand(0, 40);
+        if (viewers > 2400) viewers = 2400 - rand(0, 60);
+        $$('.viewer-count').forEach(e => e.textContent = viewers.toLocaleString('es-MX'));
+    }
+    setInterval(updateViewers, 3200);
+
+    /* =========================================================
+       CHAT EN VIVO
+    ========================================================= */
+    const chatBox = $('#chatBox');
+    const chatPool = [
+        { n: 'María García',    a: 'https://randomuser.me/api/portraits/women/44.jpg', m: '¡Excelente tema! Me encanta que hablen de Coatzacoalcos' },
+        { n: 'Carlos Mendoza',  a: 'https://randomuser.me/api/portraits/men/67.jpg',   m: '¿Hablarán del nuevo malecón?' },
+        { n: 'Ana Rodríguez',   a: 'https://randomuser.me/api/portraits/women/23.jpg', m: 'Saludos desde Minatitlán 🙌' },
+        { n: 'Jorge Ramírez',   a: 'https://randomuser.me/api/portraits/men/12.jpg',   m: 'Muy buena la calidad de la transmisión 👏' },
+        { n: 'Sofía Torres',    a: 'https://randomuser.me/api/portraits/women/65.jpg', m: '¿Habrá repetición del programa?' },
+        { n: 'Pedro Aguilar',   a: 'https://randomuser.me/api/portraits/men/85.jpg',   m: 'Ese dato del puerto está increíble' },
+        { n: 'Laura Jiménez',   a: 'https://randomuser.me/api/portraits/women/90.jpg', m: 'Primera vez por aquí y ya me quedé 🔥' },
+        { n: 'Diego Cruz',      a: 'https://randomuser.me/api/portraits/men/54.jpg',   m: 'Excelente audio, se escucha perfecto' },
+        { n: 'Fernanda Ruiz',   a: 'https://randomuser.me/api/portraits/women/12.jpg', m: 'Apoyo total a los talentos locales ❤️' },
+        { n: 'Ricardo Núñez',   a: 'https://randomuser.me/api/portraits/men/23.jpg',   m: 'Desde Acayucan conectados 🎧' }
+    ];
+
+    function addChat(name, avatar, msg, self = false) {
+        const el = document.createElement('div');
+        el.className = 'flex items-start gap-2 pop-in';
+        el.innerHTML = `
+            <img src="${avatar}" class="w-8 h-8 rounded-full flex-shrink-0">
+            <div>
+                <p class="text-xs ${self ? 'text-brand-cyan font-semibold' : 'text-gray-400'}">${name}</p>
+                <p class="text-sm text-gray-300">${msg}</p>
+            </div>`;
+        chatBox.appendChild(el);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        while (chatBox.children.length > 40) chatBox.removeChild(chatBox.firstChild);
+    }
+
+    let livePlaying = true;
+
+    setInterval(() => {
+        if (!livePlaying) return;
+        const m = chatPool[rand(0, chatPool.length - 1)];
+        addChat(m.n, m.a, m.m);
+    }, 5200);
+
+    $('#chatForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const input = $('#chatInput');
+        const v = input.value.trim();
+        if (!v) { toast('Escribe algo antes de enviar', 'warn'); return; }
+        addChat('Tú', 'https://randomuser.me/api/portraits/men/11.jpg', v, true);
+        input.value = '';
+        setTimeout(() => {
+            addChat('Luis Zerendieta', 'https://randomuser.me/api/portraits/men/32.jpg', '¡Gracias por tu mensaje! 🙌');
+        }, 1500);
+    });
+
+    /* =========================================================
+       REPRODUCTOR EN VIVO
+    ========================================================= */
+    function setLivePlay(state) {
+        livePlaying = state;
+        const icon = state ? 'fa-pause' : 'fa-play';
+        const iconBar = state ? 'fa-pause' : 'fa-play';
+        $('#livePlayIcon').className = `fas ${icon} text-white text-3xl ${state ? '' : 'ml-1'}`;
+        $('#barPlayIcon').className = `fas ${iconBar} text-xl`;
+        $('#livePlay').style.opacity = state ? '' : '1';
+        $('#livePlay').classList.toggle('opacity-40', state);
+        $('#playerBar').style.animationPlayState = state ? 'running' : 'paused';
+        $('#liveImg').style.opacity = state ? '0.6' : '0.25';
+        toast(state ? 'Reproduciendo transmisión en vivo' : 'Transmisión pausada', state ? 'live' : 'info');
+    }
+
+    function toggleLivePlay() { setLivePlay(!livePlaying); }
+    $('#livePlay').addEventListener('click', () => setLivePlay(!livePlaying));
+
+    let muted = false;
+    function toggleMute() {
+        muted = !muted;
+        $('#muteIcon').className = muted ? 'fas fa-volume-xmark' : 'fas fa-volume-up';
+        toast(muted ? 'Audio silenciado' : 'Audio activado', 'info');
+    }
+
+    let notified = false;
+    function toggleNotify() {
+        notified = !notified;
+        const btn = $('#notifyBtn');
+        if (notified) {
+            btn.innerHTML = '<i class="fas fa-check text-emerald-400"></i><span>Notificado</span>';
+            btn.classList.add('ring-1', 'ring-emerald-400/50');
+            toast('Te avisaremos cuando empiece la próxima transmisión', 'success');
+        } else {
+            btn.innerHTML = '<i class="fas fa-bell"></i><span>Notificarme</span>';
+            btn.classList.remove('ring-1', 'ring-emerald-400/50');
+            toast('Notificación desactivada', 'info');
+        }
+    }
+
+    /* =========================================================
+       CAMPANITA / NOTIFICACIONES
+    ========================================================= */
+    $('#bellBtn').addEventListener('click', e => {
+        e.stopPropagation();
+        $('#notifPanel').classList.toggle('hidden');
+    });
+    document.addEventListener('click', e => {
+        const panel = $('#notifPanel');
+        if (!panel.classList.contains('hidden') && !panel.contains(e.target) && e.target !== $('#bellBtn')) {
+            panel.classList.add('hidden');
+        }
+    });
+    function clearNotifs() {
+        $('#bellDot').classList.add('hidden');
+        $$('.notif-item').forEach(i => i.classList.remove('bg-brand-cyan/5'));
+        toast('Notificaciones marcadas como leídas', 'success');
+    }
+
+    /* =========================================================
+       MENÚ MÓVIL
+    ========================================================= */
+    function toggleMobileMenu() {
+        $('#mobileMenu').classList.toggle('hidden');
+    }
+
+    /* =========================================================
+       FILTRO DE NOTICIAS
+    ========================================================= */
+    let moreNewsOpen = false;
+
+    $$('.news-filter').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('.news-filter').forEach(b => {
+                b.className = 'news-filter px-4 py-2 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded-lg text-sm font-medium transition';
+            });
+            btn.className = 'news-filter px-4 py-2 bg-gradient-to-r from-brand-cyan to-brand-blue text-white rounded-lg text-sm font-medium transition';
+
+            const f = btn.dataset.filter;
+            let shown = 0;
+            $$('.news-card').forEach(card => {
+                const isExtra = card.dataset.extra === '1';
+                if (isExtra && !moreNewsOpen) { card.style.display = 'none'; return; }
+                const match = (f === 'todas') || card.dataset.cat === f;
+                card.style.display = match ? '' : 'none';
+                if (match) {
+                    shown++;
+                    card.classList.remove('pop-in');
+                    void card.offsetWidth;
+                    card.classList.add('pop-in');
+                }
+            });
+            toast(`Mostrando ${shown} noticia(s) · ${btn.textContent.trim()}`, 'info');
+        });
+    });
+
+    function toggleMoreNews() {
+        moreNewsOpen = !moreNewsOpen;
+        $$('.news-card[data-extra="1"]').forEach(card => {
+            card.classList.toggle('hidden', !moreNewsOpen);
+            if (moreNewsOpen) {
+                card.classList.remove('pop-in');
+                void card.offsetWidth;
+                card.classList.add('pop-in');
+            }
+        });
+        const btn = $('#moreNewsBtn');
+        btn.textContent = moreNewsOpen ? 'Ver menos noticias' : 'Ver todas las noticias';
+        toast(moreNewsOpen ? 'Cargando 2 noticias más...' : 'Mostrando noticias principales', 'info');
+    }
+    window.toggleMoreNews = toggleMoreNews;
+
+    /* =========================================================
+       MODAL GENÉRICO
+    ========================================================= */
+    function openModal(title, html) {
+        $('#modalTitle').textContent = title;
+        $('#modalBody').innerHTML = html;
+        const panel = $('#modalPanel');
+        panel.classList.remove('pop-in');
+        void panel.offsetWidth;
+        panel.classList.add('pop-in');
+        $('#modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        $('#modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    window.closeModal = closeModal;
+
+    /* ---------- LOGIN ---------- */
+    function openLogin() {
+        openModal('Iniciar Sesión', `
+            <form onsubmit="doLogin(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Correo electrónico</label>
+                    <input type="email" required placeholder="tucorreo@ejemplo.com"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Contraseña</label>
+                    <input type="password" required placeholder="••••••••"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-cyan to-brand-blue hover:from-brand-cyanBright hover:to-brand-blueElectric text-white font-semibold py-2.5 rounded-lg transition">
+                    Entrar
+                </button>
+                <p class="text-center text-xs text-gray-500">
+                    ¿No tienes cuenta?
+                    <a href="#" onclick="openRegister(); return false;" class="text-brand-cyan hover:underline">Regístrate gratis</a>
+                </p>
+            </form>`);
+    }
+    window.openLogin = openLogin;
+
+    function openRegister() {
+        openModal('Crear Cuenta', `
+            <form onsubmit="doRegister(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">Nombre</label>
+                        <input type="text" required placeholder="Juan"
+                            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">Apellido</label>
+                        <input type="text" required placeholder="Pérez"
+                            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Correo electrónico</label>
+                    <input type="email" required placeholder="tucorreo@ejemplo.com"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Contraseña</label>
+                    <input type="password" required placeholder="Mínimo 8 caracteres"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-magenta to-brand-magentaDark hover:opacity-90 text-white font-semibold py-2.5 rounded-lg transition">
+                    Crear mi cuenta
+                </button>
+                <p class="text-center text-[11px] text-gray-500">Al registrarte aceptas los Términos y el Aviso de Privacidad</p>
+            </form>`);
+    }
+    window.openRegister = openRegister;
+
+    function doLogin(e) {
+        e.preventDefault();
+        closeModal();
+        toast('¡Bienvenido de nuevo a Al Aire! 👋', 'success');
+    }
+    window.doLogin = doLogin;
+
+    function doRegister(e) {
+        e.preventDefault();
+        closeModal();
+        toast('Cuenta creada con éxito. ¡Bienvenido a la comunidad! 🎉', 'success');
+    }
+    window.doRegister = doRegister;
+
+    /* ---------- CLUB DE FUNDADORES ---------- */
+    function openFounders() {
+        openModal('Club de Fundadores', `
+            <div class="text-center mb-5">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-brand-cyan via-brand-blue to-brand-magenta flex items-center justify-center mb-3 floaty">
+                    <i class="fas fa-gift text-white text-2xl"></i>
+                </div>
+                <p class="text-gray-300 text-sm">Sé de los primeros <span class="text-white font-bold">500 miembros</span> y obtén acceso anticipado, insignia exclusiva y mención en el lanzamiento.</p>
+            </div>
+            <form onsubmit="doFounder(event)" class="space-y-3">
+                <input type="text" required placeholder="Nombre completo"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <input type="email" required placeholder="Correo electrónico"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-cyan to-brand-magenta text-white font-semibold py-2.5 rounded-lg transition hover:opacity-90">
+                    Reservar mi lugar
+                </button>
+            </form>
+            <div class="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
+                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                <span>Quedan <span class="text-white font-semibold">127</span> lugares disponibles</span>
+            </div>`);
+    }
+    window.openFounders = openFounders;
+
+    function doFounder(e) {
+        e.preventDefault();
+        closeModal();
+        toast('¡Lugar reservado! Revisa tu correo para confirmar 🎉', 'success');
+    }
+    window.doFounder = doFounder;
+
+    /* ---------- ANUNCIA TU MARCA ---------- */
+    function openAdvertise() {
+        openModal('Anuncia tu marca', `
+            <p class="text-gray-300 text-sm mb-4">Llega a <span class="text-white font-bold">15,000+ suscriptores</span> locales con contenido patrocinado, menciones en vivo y presencia en el directorio.</p>
+            <form onsubmit="doAdvertise(event)" class="space-y-3">
+                <input type="text" required placeholder="Nombre del negocio"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <input type="email" required placeholder="Correo de contacto"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                    <option>Plan Básico — $1,500/mes</option>
+                    <option>Plan Crecimiento — $3,500/mes</option>
+                    <option>Plan Premium — $7,000/mes</option>
+                </select>
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-cyan to-brand-blue text-white font-semibold py-2.5 rounded-lg transition hover:opacity-90">
+                    Solicitar información
+                </button>
+            </form>`);
+    }
+    window.openAdvertise = openAdvertise;
+
+    function doAdvertise(e) {
+        e.preventDefault();
+        closeModal();
+        toast('Solicitud enviada. Te contactaremos en menos de 24 h 📩', 'success');
+    }
+    window.doAdvertise = doAdvertise;
+
+    function openPlans() {
+        const planes = [
+            { n: 'Básico', p: '$1,500', d: 'Mención en 1 programa + ficha en el directorio', c: 'from-brand-cyan to-brand-blue' },
+            { n: 'Crecimiento', p: '$3,500', d: '3 menciones + video corto + destacado 7 días', c: 'from-brand-blue to-brand-magenta' },
+            { n: 'Premium', p: '$7,000', d: 'Patrocinio de programa + banner permanente + cápsulas', c: 'from-brand-magenta to-brand-gold' }
+        ];
+        openModal('Planes de Publicidad', `
+            <div class="space-y-3">
+                ${planes.map(p => `
+                    <div class="bg-gray-800/60 border border-gray-700 rounded-xl p-4 hover:border-brand-cyan/50 transition">
+                        <div class="flex items-center justify-between mb-1">
+                            <p class="text-white font-bold">${p.n}</p>
+                            <p class="text-lg font-bold bg-gradient-to-r ${p.c} bg-clip-text text-transparent">${p.p}<span class="text-xs text-gray-500">/mes</span></p>
+                        </div>
+                        <p class="text-gray-400 text-xs">${p.d}</p>
+                    </div>`).join('')}
+                <button onclick="openAdvertise()" class="w-full mt-2 bg-gradient-to-r from-brand-cyan to-brand-blue text-white font-semibold py-2.5 rounded-lg transition hover:opacity-90">
+                    Quiero anunciarme
+                </button>
+            </div>`);
+    }
+    window.openPlans = openPlans;
+
+    /* ---------- DIRECTORIO ---------- */
+    function openDirectorio(cat, num, icon, color) {
+        openModal(`Directorio · ${cat}`, `
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-${color}/10 flex items-center justify-center">
+                    <i class="fas ${icon} text-${color} text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-white font-bold">${num} negocios registrados</p>
+                    <p class="text-gray-400 text-xs">Categoría: ${cat}</p>
+                </div>
+            </div>
+            <div class="space-y-2">
+                ${['Centro', 'Zona Norte', 'Zona Sur'].map((z, i) => `
+                    <div class="flex items-center justify-between bg-gray-800/60 border border-gray-700 rounded-lg px-4 py-3 hover:border-brand-cyan/50 transition cursor-pointer"
+                         onclick="toast('Abriendo negocios de la ${z} (demo)','info')">
+                        <div>
+                            <p class="text-white text-sm font-medium">${z}</p>
+                            <p class="text-gray-500 text-xs">${Math.round(num / 3) + i} negocios</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-500 text-xs"></i>
+                    </div>`).join('')}
+            </div>
+            <button onclick="toast('Registro de negocio enviado (demo)','success')" class="w-full mt-4 bg-gradient-to-r from-brand-cyan to-brand-blue text-white font-semibold py-2.5 rounded-lg transition hover:opacity-90">
+                Registrar mi negocio
+            </button>`);
+    }
+    window.openDirectorio = openDirectorio;
+
+    /* ---------- LEGAL / CONTACTO ---------- */
+    function openLegal(titulo) {
+        openModal(titulo, `
+            <p class="text-gray-300 text-sm leading-relaxed mb-3">
+                Este es un documento de demostración de <span class="text-white font-semibold">Al Aire</span>.
+                En la versión final aquí se mostrará el texto legal completo correspondiente a
+                ${titulo.toLowerCase()} de la plataforma.
+            </p>
+            <p class="text-gray-400 text-xs">Última actualización: enero 2026 · Coatzacoalcos, Veracruz.</p>
+            <button onclick="closeModal()" class="w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white font-medium py-2.5 rounded-lg transition">Entendido</button>`);
+    }
+    window.openLegal = openLegal;
+
+    function openContacto() {
+        openModal('Contacto', `
+            <form onsubmit="event.preventDefault(); closeModal(); toast('Mensaje enviado. ¡Gracias por escribirnos!','success');" class="space-y-3">
+                <input type="text" required placeholder="Tu nombre"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <input type="email" required placeholder="Tu correo"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <textarea required rows="3" placeholder="¿En qué podemos ayudarte?"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition resize-none"></textarea>
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-cyan to-brand-blue text-white font-semibold py-2.5 rounded-lg transition hover:opacity-90">Enviar mensaje</button>
+            </form>`);
+    }
+    window.openContacto = openContacto;
+
+    /* ---------- PROGRAMAS ---------- */
+    function openPrograma(titulo, hora, desc) {
+        openModal(titulo, `
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-brand-magenta/10 flex items-center justify-center">
+                    <i class="fas fa-calendar-alt text-brand-magenta text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-white font-bold">${hora}</p>
+                    <p class="text-gray-400 text-xs">${desc}</p>
+                </div>
+            </div>
+            <p class="text-gray-300 text-sm mb-4">Recibirás un recordatorio 15 minutos antes de que comience la transmisión.</p>
+            <button onclick="closeModal(); toast('Recordatorio programado ✅','success');"
+                class="w-full bg-gradient-to-r from-brand-cyan to-brand-blue text-white font-semibold py-2.5 rounded-lg transition hover:opacity-90">
+                Recordarme
+            </button>`);
+    }
+    window.openPrograma = openPrograma;
+
+    /* ---------- NOTICIA ---------- */
+    function openNews(titulo, autor, tiempo, img) {
+        openModal(titulo, `
+            <img src="${img}" class="w-full h-48 object-cover rounded-xl mb-4" alt="">
+            <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                <i class="fas fa-user text-brand-cyan"></i><span>${autor}</span>
+                <span>·</span><span>${tiempo}</span>
+            </div>
+            <p class="text-gray-300 text-sm leading-relaxed mb-3">
+                Esta es una nota de demostración. En la versión final aquí aparecerá el contenido completo
+                del reportaje con imágenes, videos y testimonios de la comunidad.
+            </p>
+            <p class="text-gray-400 text-sm leading-relaxed mb-5">
+                La región del Sureste de Veracruz vive un momento clave en su desarrollo, y en <span class="text-white font-semibold">Al Aire</span>
+                seguimos de cerca cada detalle para mantenerte informado.
+            </p>
+            <div class="flex gap-2">
+                <button onclick="toast('Nota compartida (demo)','success')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fas fa-share-nodes mr-2"></i>Compartir
+                </button>
+                <button onclick="toast('Guardada en tus favoritos','success')" class="flex-1 bg-gradient-to-r from-brand-cyan to-brand-blue text-white py-2.5 rounded-lg text-sm font-medium transition">
+                    <i class="fas fa-bookmark mr-2"></i>Guardar
+                </button>
+            </div>`);
+    }
+    window.openNews = openNews;
+
+    /* ---------- QUIERO SER CREADOR ---------- */
+    function openCreatorForm() {
+        openModal('Quiero ser creador', `
+            <p class="text-gray-300 text-sm mb-4">Únete al programa de creadores de Al Aire y monetiza tu contenido con audiencia 100% local.</p>
+            <form onsubmit="event.preventDefault(); closeModal(); toast('¡Solicitud recibida! Te contactaremos pronto 🎬','success');" class="space-y-3">
+                <input type="text" required placeholder="Nombre artístico"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <input type="email" required placeholder="Correo electrónico"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-brand-cyan transition">
+                    <option>Podcast</option>
+                    <option>Video / Documental</option>
+                    <option>Música</option>
+                    <option>Noticias</option>
+                    <option>Gastronomía</option>
+                </select>
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-cyan to-brand-blue text-white font-semibold py-2.5 rounded-lg transition hover:opacity-90">
+                    Enviar solicitud
+                </button>
+            </form>`);
+    }
+    window.openCreatorForm = openCreatorForm;
+
+    /* =========================================================
+       SEGUIR CREADORES
+    ========================================================= */
+    function toggleFollow(btn) {
+        const name = btn.dataset.name;
+        const following = btn.dataset.following === '1';
+        btn.dataset.following = following ? '0' : '1';
+
+        if (following) {
+            btn.textContent = 'Seguir';
+            btn.className = 'follow-btn mt-4 w-full bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-lg text-sm font-medium transition';
+            toast(`Dejaste de seguir a ${name}`, 'info');
+        } else {
+            btn.textContent = 'Siguiendo ✓';
+            btn.className = 'follow-btn mt-4 w-full bg-gradient-to-r from-brand-cyan to-brand-blue text-white py-2 rounded-lg text-sm font-medium transition';
+            toast(`Ahora sigues a ${name}`, 'success');
+        }
+    }
+    window.toggleFollow = toggleFollow;
+
+    /* =========================================================
+       MINI REPRODUCTOR DE PODCAST
+    ========================================================= */
+    let miniPlaying = false;
+    let miniPos = 0;
+    let miniTotalSec = 0;
+    let miniTimer = null;
+    let activePodcastBtn = null;
+
+    function fmt(sec) {
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const s = Math.floor(sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function playPodcast(btn) {
+        const title = btn.dataset.title;
+        const author = btn.dataset.author;
+        const mins = parseInt(btn.dataset.min, 10);
+
+        if (activePodcastBtn === btn && miniPlaying) {
+            toggleMiniPlay();
+            return;
+        }
+
+        activePodcastBtn = btn;
+        miniTotalSec = mins * 60;
+        miniPos = 0;
+
+        $('#miniTitle').textContent = `${title} — ${author}`;
+        $('#miniTotal').textContent = fmt(miniTotalSec);
+        $('#miniTime').textContent = '00:00';
+        $('#miniProgress').style.width = '0%';
+
+        $('#miniPlayer').classList.remove('translate-y-40', 'opacity-0');
+        setMiniPlaying(true);
+        toast(`Reproduciendo: ${title}`, 'info');
+    }
+    window.playPodcast = playPodcast;
+
+    function setMiniPlaying(state) {
+        miniPlaying = state;
+        $('#miniToggle').innerHTML = state
+            ? '<i class="fas fa-pause text-sm"></i>'
+            : '<i class="fas fa-play text-sm ml-0.5"></i>';
+
+        if (miniTimer) clearInterval(miniTimer);
+        if (state) {
+            miniTimer = setInterval(() => {
+                miniPos += 1;
+                if (miniPos >= miniTotalSec) { miniPos = miniTotalSec; setMiniPlaying(false); }
+                $('#miniTime').textContent = fmt(miniPos);
+                $('#miniProgress').style.width = (miniPos / miniTotalSec * 100) + '%';
+            }, 1000);
+        }
+    }
+
+    function toggleMiniPlay() {
+        if (!miniTotalSec) { toast('Selecciona un podcast primero', 'warn'); return; }
+        setMiniPlaying(!miniPlaying);
+    }
+    window.toggleMiniPlay = toggleMiniPlay;
+
+    function closeMiniPlayer() {
+        setMiniPlaying(false);
+        $('#miniPlayer').classList.add('translate-y-40', 'opacity-0');
+        toast('Reproducción detenida', 'info');
+    }
+    window.closeMiniPlayer = closeMiniPlayer;
+
+    /* =========================================================
+       MODAL DE VIDEO
+    ========================================================= */
+    function openVideo(title, dur, img) {
+        openModal(title, `
+            <div class="relative rounded-xl overflow-hidden bg-black mb-4">
+                <img id="videoFrame" src="${img}" class="w-full aspect-video object-cover opacity-70" alt="">
+                <div class="absolute inset-0 flex items-center justify-center" id="videoPlayWrap">
+                    <button onclick="playVideoMock('${dur}')"
+                        class="w-16 h-16 bg-gradient-to-br from-brand-cyan to-brand-blue rounded-full flex items-center justify-center hover:scale-110 transition shadow-2xl beat">
+                        <i class="fas fa-play text-white text-2xl ml-1"></i>
+                    </button>
+                </div>
+                <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">${dur}</div>
+            </div>
+            <div class="h-1 bg-gray-700 rounded-full overflow-hidden mb-4">
+                <div id="videoBar" class="h-full w-0 bg-gradient-to-r from-brand-cyan to-brand-magenta rounded-full transition-all duration-[6000ms]"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500">
+                <span><i class="far fa-eye mr-1"></i>${rand(1200, 5600).toLocaleString('es-MX')} vistas</span>
+                <span><i class="far fa-clock mr-1"></i>Duración ${dur}</span>
+            </div>`);
+    }
+    window.openVideo = openVideo;
+
+    function playVideoMock(dur) {
+        $('#videoPlayWrap').style.display = 'none';
+        $('#videoFrame').style.opacity = '1';
+        const bar = $('#videoBar');
+        bar.style.width = '0%';
+        requestAnimationFrame(() => { bar.style.width = '100%'; });
+        toast('Reproduciendo video (demo) 🎬', 'info');
+    }
+    window.playVideoMock = playVideoMock;
+
+    /* =========================================================
+       BUSCADOR
+    ========================================================= */
+    const searchData = [
+        { t: 'El futuro del turismo en las Escolleras de Coatzacoalcos', c: 'Noticia',  i: 'fa-newspaper',  col: 'text-brand-blue' },
+        { t: 'Nuevas inversiones llegan al puerto industrial',           c: 'Noticia',  i: 'fa-newspaper',  col: 'text-brand-blue' },
+        { t: 'Festival gastronómico este fin de semana',                  c: 'Noticia',  i: 'fa-newspaper',  col: 'text-brand-blue' },
+        { t: 'Minatitlán estrena ruta de transporte industrial',          c: 'Noticia',  i: 'fa-newspaper',  col: 'text-brand-blue' },
+        { t: 'Acayucan prepara su feria anual',                           c: 'Noticia',  i: 'fa-newspaper',  col: 'text-brand-blue' },
+        { t: 'Emprendedores del Sur',                                     c: 'Podcast',  i: 'fa-podcast',    col: 'text-brand-magenta' },
+        { t: 'Historias del Puerto',                                      c: 'Podcast',  i: 'fa-podcast',    col: 'text-brand-magenta' },
+        { t: 'Debate Regional',                                           c: 'Podcast',  i: 'fa-podcast',    col: 'text-brand-magenta' },
+        { t: 'Guía: Los mejores tacos de Minatitlán',                     c: 'Video',    i: 'fa-video',      col: 'text-brand-gold' },
+        { t: 'Recetas tradicionales del sur de Veracruz',                 c: 'Video',    i: 'fa-video',      col: 'text-brand-gold' },
+        { t: 'Startups tecnológicas en Coatzacoalcos',                    c: 'Video',    i: 'fa-video',      col: 'text-brand-gold' },
+        { t: 'Luis Zerendieta',                                           c: 'Creador',  i: 'fa-user',       col: 'text-brand-cyan' },
+        { t: 'María García',                                              c: 'Creador',  i: 'fa-user',       col: 'text-brand-cyan' },
+        { t: 'Carlos Mendoza',                                            c: 'Creador',  i: 'fa-user',       col: 'text-brand-cyan' },
+        { t: 'Ana Rodríguez',                                             c: 'Creador',  i: 'fa-user',       col: 'text-brand-cyan' }
+    ];
+
+    function renderSearch(q = '') {
+        const term = q.trim().toLowerCase();
+        const list = term ? searchData.filter(d => d.t.toLowerCase().includes(term)) : searchData.slice(0, 8);
+        const box = $('#searchResults');
+
+        if (!list.length) {
+            box.innerHTML = `<p class="text-center text-gray-500 text-sm py-8">Sin resultados para "<span class="text-white">${q}</span>"</p>`;
+            return;
+        }
+
+        box.innerHTML = (term ? '' : '<p class="text-[10px] uppercase tracking-wider text-gray-500 px-3 pt-2 pb-1">Sugerencias</p>') +
+            list.map(d => `
+                <button onclick="pickResult('${d.t.replace(/'/g, "\\'")}')"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 transition text-left">
+                    <i class="fas ${d.i} ${d.col} text-sm w-4"></i>
+                    <span class="text-sm text-gray-200 flex-1 truncate">${d.t}</span>
+                    <span class="text-[10px] text-gray-500 border border-gray-700 rounded px-1.5 py-0.5">${d.c}</span>
+                </button>`).join('');
+    }
+
+    function openSearch() {
+        $('#searchOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        renderSearch('');
+        setTimeout(() => $('#searchInput').focus(), 60);
+    }
+    function closeSearch() {
+        $('#searchOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+        $('#searchInput').value = '';
+    }
+    function pickResult(t) {
+        closeSearch();
+        toast(`Abriendo resultado: ${t}`, 'info');
+    }
+    window.openSearch = openSearch;
+    window.closeSearch = closeSearch;
+    window.pickResult = pickResult;
+
+    $('#searchInput').addEventListener('input', e => renderSearch(e.target.value));
+
+    /* =========================================================
+       ATAJOS DE TECLADO
+    ========================================================= */
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeModal();
+            closeSearch();
+            $('#notifPanel').classList.add('hidden');
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            openSearch();
+        }
+    });
+
+    /* =========================================================
+       REVEAL ON SCROLL
+    ========================================================= */
+    const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+            if (en.isIntersecting) {
+                en.target.classList.add('visible');
+                revealObserver.unobserve(en.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    $$('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* =========================================================
+       CONTADORES ANIMADOS
+    ========================================================= */
+    const counterObserver = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+            if (!en.isIntersecting) return;
+            const el = en.target;
+            const target = parseInt(el.dataset.count, 10);
+            const suffix = el.dataset.suffix || '';
+            let current = 0;
+            const step = Math.max(1, Math.ceil(target / 45));
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) { current = target; clearInterval(timer); }
+                el.textContent = current + suffix;
+            }, 28);
+            counterObserver.unobserve(el);
+        });
+    }, { threshold: 0.5 });
+
+    $$('[data-count]').forEach(el => counterObserver.observe(el));
+
+    /* =========================================================
+       NAVEGACIÓN ACTIVA
+    ========================================================= */
+    const navLinks = $$('.nav-link');
+    const sections = $$('section[id]');
+
+    const navObserver = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+            if (en.isIntersecting) {
+                navLinks.forEach(l => {
+                    const active = l.getAttribute('href') === '#' + en.target.id;
+                    l.className = active
+                        ? 'nav-link px-4 py-2 text-sm font-medium text-white bg-brand-cyan/10 rounded-lg'
+                        : 'nav-link px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition';
+                });
+            }
+        });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+
+    sections.forEach(s => navObserver.observe(s));
+
+    /* =========================================================
+       BIENVENIDA
+    ========================================================= */
+    window.addEventListener('load', () => {
+        setTimeout(() => toast('Bienvenido a Al Aire · Estás viendo la demo en vivo 🔴', 'live'), 900);
+    });
+    </script>
+</body>
+</html>
